@@ -1,1 +1,659 @@
 # nicholasjonathan.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nicholas Jonathan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f3ef;
+      --ink: #1a1916;
+      --muted: #8a8680;
+      --accent: #c9a96e;
+      --line: #dedad4;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.7;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 32px; height: 32px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.35s cubic-bezier(.25,.46,.45,.94), opacity 0.35s ease;
+      transform: translate(-50%, -50%);
+      opacity: 0.4;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.6rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(245,243,239,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    nav.scrolled { border-bottom-color: var(--line); }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+
+    /* Hero */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 7rem;
+      padding-top: 7rem;
+    }
+    .hero-inner { width: 100%; }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-size: clamp(3.2rem, 8vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.03;
+      letter-spacing: -0.01em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .hero-desc {
+      max-width: 480px;
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.6s forwards;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      right: 2.5rem;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      writing-mode: vertical-rl;
+      opacity: 0;
+      animation: fadeIn 1s 1.2s forwards;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .hero-scroll::before {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 40px;
+      background: var(--accent);
+      animation: lineGrow 1s 1.5s both;
+    }
+
+    /* Sections */
+    section {
+      padding: 6rem 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 3rem;
+    }
+
+    /* About */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .about-text { font-size: 1.08rem; color: var(--muted); }
+    .about-text p + p { margin-top: 1.2rem; }
+    .about-text strong { color: var(--ink); font-weight: 400; }
+
+    .about-facts { display: flex; flex-direction: column; gap: 1.4rem; }
+    .fact {
+      padding-bottom: 1.4rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .fact:last-child { border-bottom: none; }
+    .fact-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+    .fact-value { font-size: 0.97rem; color: var(--ink); }
+
+    /* Projects */
+    .projects-list { display: flex; flex-direction: column; }
+
+    .project-item {
+      display: grid;
+      grid-template-columns: 3rem 1fr auto;
+      gap: 1.5rem;
+      align-items: start;
+      padding: 2.2rem 0;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+    .project-item:hover::after { width: 100%; }
+    .project-item:hover .project-num { color: var(--accent); }
+
+    .project-num {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--line);
+      padding-top: 0.3rem;
+      transition: color 0.3s;
+    }
+    .project-title { font-size: 1.25rem; font-weight: 300; margin-bottom: 0.4rem; }
+    .project-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .project-tags {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--line);
+      padding: 0.2rem 0.55rem;
+      color: var(--muted);
+    }
+    .project-arrow {
+      font-size: 1.1rem;
+      color: var(--line);
+      padding-top: 0.2rem;
+      transition: transform 0.3s, color 0.3s;
+    }
+    .project-item:hover .project-arrow {
+      transform: translate(3px, -3px);
+      color: var(--accent);
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .skill-group {
+      padding: 2rem;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .skill-group:nth-child(3n) { border-right: none; }
+    .skill-group:nth-last-child(-n+3) { border-bottom: none; }
+
+    .skill-group-title {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .skill-list li {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    /* Contact */
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: end;
+    }
+    .contact-heading {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+    }
+    .contact-heading em { font-style: italic; color: var(--muted); }
+
+    .contact-links { display: flex; flex-direction: column; gap: 1.2rem; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 0.95rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--line);
+      transition: gap 0.3s;
+    }
+    .contact-link:hover { gap: 1.5rem; }
+    .contact-link:hover .contact-link-arrow { color: var(--accent); }
+    .contact-link-label { flex: 1; }
+    .contact-link-sub {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 0.1rem;
+    }
+    .contact-link-arrow { color: var(--muted); transition: color 0.2s; }
+
+    /* Footer */
+    footer {
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-text {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes lineGrow {
+      from { transform: scaleY(0); transform-origin: top; }
+      to   { transform: scaleY(1); transform-origin: top; }
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .skill-group:nth-child(3n) { border-right: 1px solid var(--line); }
+      .skill-group:nth-child(2n) { border-right: none; }
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav id="nav">
+    <span class="nav-logo">NJ — Portfolio</span>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero" style="border:none;">
+    <div class="container" style="position:relative; width:100%;">
+      <p class="hero-eyebrow">Available for internships &amp; collaborations</p>
+      <h1 class="hero-name">
+        Nicholas<br><em>Jonathan</em>
+      </h1>
+      <p class="hero-desc">
+        Computer Science student at the University of Melbourne, exploring the intersection of human experience and software systems.
+      </p>
+      <span class="hero-scroll">Scroll</span>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <p class="section-label reveal">01 — About</p>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>
+            I'm an 18-year-old student studying <strong>Bachelor of Science in Computing and Software Systems</strong> at the University of Melbourne.
+          </p>
+          <p>
+            I'm drawn to work that sits at the edge of technology and human behaviour — particularly <strong>HCI, interaction design,</strong> and how digital systems can be built with genuine empathy for the people using them.
+          </p>
+          <p>
+            Outside of code, I speak Indonesian, English, and French — and spend too much time inventing languages for fun.
+          </p>
+        </div>
+        <div class="about-facts reveal">
+          <div class="fact">
+            <div class="fact-label">Currently</div>
+            <div class="fact-value">B.Sc. Computing &amp; Software Systems</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">University</div>
+            <div class="fact-value">University of Melbourne</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">Based in</div>
+            <div class="fact-value">Melbourne, Australia</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">Languages</div>
+            <div class="fact-value">Indonesian · English · French</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">Interests</div>
+            <div class="fact-value">HCI · Linguistics · Conlanging</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="container">
+      <p class="section-label reveal">02 — Projects</p>
+      <div class="projects-list reveal">
+
+        <a href="#" class="project-item">
+          <span class="project-num">01</span>
+          <div>
+            <div class="project-title">HCI Portfolio — In Progress</div>
+            <div class="project-desc">Applying user-centred design methods to real interaction problems. Research, wireframing, and usability testing.</div>
+            <div class="project-tags">
+              <span class="tag">HCI</span>
+              <span class="tag">Figma</span>
+              <span class="tag">UX Research</span>
+            </div>
+          </div>
+          <span class="project-arrow">↗</span>
+        </a>
+
+        <a href="#" class="project-item">
+          <span class="project-num">02</span>
+          <div>
+            <div class="project-title">Veltarič — Constructed Language</div>
+            <div class="project-desc">A personal conlang project — designing a complete phonological, morphological, and syntactic system from scratch with Slavic-Romance influences.</div>
+            <div class="project-tags">
+              <span class="tag">Linguistics</span>
+              <span class="tag">Conlang</span>
+              <span class="tag">Creative</span>
+            </div>
+          </div>
+          <span class="project-arrow">↗</span>
+        </a>
+
+        <a href="#" class="project-item">
+          <span class="project-num">03</span>
+          <div>
+            <div class="project-title">More coming soon</div>
+            <div class="project-desc">Currently building. Check back as I progress through my studies and personal projects.</div>
+            <div class="project-tags">
+              <span class="tag">2025</span>
+            </div>
+          </div>
+          <span class="project-arrow">↗</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-label reveal">03 — Skills</p>
+      <div class="skills-grid reveal">
+        <div class="skill-group">
+          <div class="skill-group-title">Languages</div>
+          <ul class="skill-list">
+            <li>Python</li>
+            <li>JavaScript</li>
+            <li>HTML / CSS</li>
+            <li>Java</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Design</div>
+          <ul class="skill-list">
+            <li>Figma</li>
+            <li>UX Research</li>
+            <li>Wireframing</li>
+            <li>Usability Testing</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Tools</div>
+          <ul class="skill-list">
+            <li>Git / GitHub</li>
+            <li>VS Code</li>
+            <li>Notion</li>
+            <li>FigJam</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Concepts</div>
+          <ul class="skill-list">
+            <li>Human-Computer Interaction</li>
+            <li>Interaction Design</li>
+            <li>Algorithms</li>
+            <li>Systems Thinking</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Human Languages</div>
+          <ul class="skill-list">
+            <li>Indonesian (Native)</li>
+            <li>English (Fluent)</li>
+            <li>French (Conversational)</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Soft Skills</div>
+          <ul class="skill-list">
+            <li>Cross-cultural communication</li>
+            <li>Creative problem solving</li>
+            <li>Independent learning</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <p class="section-label reveal">04 — Contact</p>
+      <div class="contact-inner">
+        <div class="reveal">
+          <h2 class="contact-heading">Let's<br><em>work together</em></h2>
+        </div>
+        <div class="contact-links reveal">
+          <a href="mailto:nicholasjonthan@student.unimelb.edu.au" class="contact-link">
+            <div class="contact-link-label">
+              Email
+              <span class="contact-link-sub">nicholasjonathan@student.unimelb.edu.au</span>
+            </div>
+            <span class="contact-link-arrow">→</span>
+          </a>
+          <a href="https://github.com/yourusername" target="_blank" class="contact-link">
+            <div class="contact-link-label">
+              GitHub
+              <span class="contact-link-sub">github.com/yourusername</span>
+            </div>
+            <span class="contact-link-arrow">→</span>
+          </a>
+          <a href="https://linkedin.com/in/yourusername" target="_blank" class="contact-link">
+            <div class="contact-link-label">
+              LinkedIn
+              <span class="contact-link-sub">linkedin.com/in/yourusername</span>
+            </div>
+            <span class="contact-link-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex; justify-content:space-between; width:100%;">
+      <span class="footer-text">Nicholas Jonathan © 2025</span>
+      <span class="footer-text">Melbourne, Australia</span>
+    </div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
